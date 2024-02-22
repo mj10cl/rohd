@@ -54,21 +54,22 @@ class SystemVerilogSynthesizer extends Synthesizer {
 
     // ignore: invalid_use_of_protected_member
     for (final signalName in module.inputs.keys) {
-      connections.add('.$signalName(${inputs[signalName]!})');
+      connections.add('    .$signalName(${inputs[signalName]!})');
     }
 
     for (final signalName in module.outputs.keys) {
-      connections.add('.$signalName(${outputs[signalName]!})');
+      connections.add('    .$signalName(${outputs[signalName]!})');
     }
 
-    final connectionsStr = connections.join(',');
+    final connectionsStr = connections.join(',\n');
     var parameterString = '';
     if (parameters != null) {
-      final parameterContents =
-          parameters.entries.map((e) => '.${e.key}(${e.value})').join(',');
-      parameterString = '#($parameterContents)';
+      final parameterContents = parameters.entries
+          .map((e) => '    .${e.key}(${e.value})')
+          .join(',\n');
+      parameterString = '#(\n$parameterContents\n)';
     }
-    return '$instanceType $parameterString $instanceName($connectionsStr);';
+    return '$instanceType $parameterString $instanceName (\n$connectionsStr\n);';
   }
 
   @override
