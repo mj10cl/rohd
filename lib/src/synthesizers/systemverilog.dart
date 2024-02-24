@@ -69,7 +69,7 @@ class SystemVerilogSynthesizer extends Synthesizer {
           .join(',\n');
       parameterString = '#(\n$parameterContents\n)';
     }
-    return '$instanceType $parameterString $instanceName (\n$connectionsStr\n);';
+    return '$instanceType $parameterString I_$instanceName (\n$connectionsStr\n);';
   }
 
   @override
