@@ -169,7 +169,7 @@ class _SystemVerilogSynthesisResult extends SynthesisResult {
   /// Representation of all input port declarations in generated SV.
   List<String> _verilogInputs() {
     final declarations = _synthModuleDefinition.inputs
-        .map((sig) => 'input logic ${sig.definitionName()}')
+        .map((sig) => '    input logic ${sig.definitionName()}')
         .toList(growable: false);
     return declarations;
   }
@@ -177,7 +177,7 @@ class _SystemVerilogSynthesisResult extends SynthesisResult {
   /// Representation of all output port declarations in generated SV.
   List<String> _verilogOutputs() {
     final declarations = _synthModuleDefinition.outputs
-        .map((sig) => 'output logic ${sig.definitionName()}')
+        .map((sig) => '    output logic ${sig.definitionName()}')
         .toList(growable: false);
     return declarations;
   }
@@ -245,7 +245,7 @@ class _SystemVerilogSynthesisResult extends SynthesisResult {
   String _toVerilog(Map<Module, String> moduleToInstanceTypeMap) {
     final verilogModuleName = moduleToInstanceTypeMap[module];
     return [
-      'module $verilogModuleName(',
+      'module $verilogModuleName (',
       _portsString,
       ');',
       _moduleContentsString,

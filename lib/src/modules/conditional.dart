@@ -1768,21 +1768,26 @@ class FlipFlop extends Module with CustomSystemVerilog {
     final d = inputs[_dName]!;
     final q = outputs[_qName]!;
 
-    final svBuffer = StringBuffer('always_ff @(posedge $clk) ');
+    final svBuffer = StringBuffer('always_ff @(posedge $clk) begin\n');
 
     if (_reset != null) {
       final resetValueString = _resetValuePort != null
           ? inputs[_resetValueName]!
           : _resetValueConst.toString();
-      svBuffer
-          .write('if(${inputs[_resetName]}) $q <= $resetValueString; else ');
+      svBuffer.write(
+          '    if (${inputs[_resetName]}) begin\n        $q <= $resetValueString;\n    end else ');
     }
 
     if (_en != null) {
-      svBuffer.write('if(${inputs[_enName]!}) ');
+      svBuffer.write('if (${inputs[_enName]!}) begin\n');
+    } else {
+      svBuffer.write('begin\n');
     }
 
-    svBuffer.write('$q <= $d;  // $instanceName');
+    svBuffer
+      ..write('        $q <= $d;  // $instanceName\n')
+      ..write('    end\n')
+      ..write('end\n');
 
     return svBuffer.toString();
   }

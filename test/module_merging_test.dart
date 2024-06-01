@@ -10,6 +10,16 @@
 import 'package:rohd/rohd.dart';
 import 'package:test/test.dart';
 
+// This module is just an array of buffers, basically so we want to check that if you create multiples with different inputs widths that you render 2 different modules.
+class ConfigurableModule extends Module {
+  ConfigurableModule(Logic a) {
+    a = addInput('a', a, width: a.width);
+    final b = addOutput('b', width: a.width);
+
+    b <= a;
+  }
+}
+
 class ComplicatedLeaf extends Module {
   Logic get d => output('d');
   ComplicatedLeaf(
@@ -57,7 +67,12 @@ class TrunkWithLeaves extends Module {
     clk = addInput('clk', clk);
     reset = addInput('reset', reset);
 
+    ConfigurableModule(clk);
+
     final abc = [Logic(name: 'a'), Logic(name: 'b'), Logic(name: 'c')];
+
+    ConfigurableModule(abc.swizzle());
+
     for (var i = 0; i < 50; i++) {
       ComplicatedLeaf(
         clk,
@@ -92,6 +107,7 @@ void main() async {
     final dut = TrunkWithLeaves(Logic(), Logic());
     await dut.build();
     final sv = dut.generateSynth();
+    print('Complex one $sv');
 
     expect('module ComplicatedLeaf'.allMatches(sv).length, 1);
   });
@@ -100,6 +116,7 @@ void main() async {
     final dut = ParentOfDifferentModuleDefNames(Logic());
     await dut.build();
     final sv = dut.generateSynth();
+    print('different reserved... $sv');
 
     expect(sv, contains('module def1'));
     expect(sv, contains('module def2'));
